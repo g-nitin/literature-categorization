@@ -5,12 +5,34 @@ import re
 import logging
 import os
 import sqlite3
+import json
+
+
+# Load configuration
+def load_config():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(script_dir, 'config.json')
+    with open(config_path, 'r') as f:
+        return json.load(f)
+
+
+config = load_config()
+
+# Use environment variable if set, otherwise use config file
+BASE_DIR: str = os.environ.get('ARXIV_EXTRACTOR_BASE_DIR', os.path.dirname(os.path.abspath(__file__)))
+
+# Setup paths
+LOG_DIR = os.path.join(BASE_DIR, config['log_dir'])
+OUTPUT_DIR = os.path.join(BASE_DIR, config['output_dir'])
+DB_FILE = os.path.join(BASE_DIR, config['db_file'])
+
+# Create necessary directories
+os.makedirs(LOG_DIR, exist_ok=True)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Setup logging
-log_dir = "../logs"
-os.makedirs(log_dir, exist_ok=True)
 logging.basicConfig(
-    filename=f"{log_dir}/arxiv_extractor_{datetime.now().strftime('%Y%m%d')}.log",
+    filename=os.path.join(LOG_DIR, f"arxiv_extractor_{datetime.now().strftime('%Y%m%d')}.log"),
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
@@ -20,12 +42,12 @@ def is_relevant(paper, must_include, optional_keywords):
     """Check if the paper is relevant based on its title and abstract"""
     text = (paper.title + " " + paper.summary).lower()
     return any(keyword.lower() in text for keyword in must_include) and \
-           any(keyword.lower() in text for keyword in optional_keywords)
+        any(keyword.lower() in text for keyword in optional_keywords)
 
 
 def init_db():
     """Initialize the SQLite database"""
-    conn = sqlite3.connect('../db/arxiv_papers.db')
+    conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS papers
                  (id TEXT PRIMARY KEY, title TEXT, authors TEXT, 
@@ -101,9 +123,7 @@ def main():
 
     # Write new papers to CSV
     if new_papers:
-        output_dir = "../out"
-        os.makedirs(output_dir, exist_ok=True)
-        csv_filename = f"{output_dir}/new_arxiv_papers_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        csv_filename = os.path.join(OUTPUT_DIR, f"new_arxiv_papers_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
 
         try:
             with open(csv_filename, mode='w', newline='', encoding='utf-8') as file:

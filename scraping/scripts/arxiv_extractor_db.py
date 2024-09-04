@@ -53,7 +53,7 @@ def insert_paper(conn, paper):
 
 # Define the main keywords we're interested in
 must_include = ["large language models", "LLMs", "GPT", "BERT", "transformers"]
-optional_keywords = ["automated planning", "symbolic planning", "neurosymbolic planning", 
+optional_keywords = ["automated planning", "symbolic planning", "neurosymbolic planning",
                      "task planning", "AI planning", "PDDL", "constraint-based planning",
                      "hierarchical task planning", "multi-agent planning", "robot planning"]
 
@@ -69,7 +69,7 @@ queries = [
 
 def main():
     logging.info("Starting arXiv paper extraction")
-    
+
     client = arxiv.Client()
     all_papers = []
 
@@ -104,7 +104,7 @@ def main():
         output_dir = "../out"
         os.makedirs(output_dir, exist_ok=True)
         csv_filename = f"{output_dir}/new_arxiv_papers_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-        
+
         try:
             with open(csv_filename, mode='w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
@@ -115,11 +115,11 @@ def main():
                         paper.title,
                         ', '.join([author.name for author in paper.authors]),
                         paper.published.strftime('%Y-%m-%d'),
-                        re.sub('\s+', ' ', paper.summary).strip(),
+                        re.sub(r'\s+', ' ', paper.summary).strip(),
                         paper.entry_id,
                         ', '.join(paper.categories)
                     ])
-            
+
             logging.info(f"CSV file '{csv_filename}' has been created with {len(new_papers)} new relevant papers.")
         except Exception as e:
             logging.error(f"Error writing to CSV file: {str(e)}")

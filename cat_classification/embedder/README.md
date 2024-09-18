@@ -1,6 +1,8 @@
 # Categorization Based on Embeddings
 
-The `categorization_embeddings.py` uses the existing dataset, process new papers from a CSV file, generate embeddings, and categorize them based on similarity to existing papers.
+# Multiple Candidate 
+
+The `categorization_embeddings.py` uses the existing dataset, process new papers from a CSV file, generate embeddings, and categorizes them based on similarity to existing papers.
 
 To further elaborate, the script does the following:
 1. Loads existing papers from a JSON file.
@@ -15,3 +17,8 @@ Two data files were used:
 
 The output of the script is a csv file containing the same data and columns as the `./copy_new_arxiv_papers_20240903_170512.csv` file, with an additional column `category` containing the category of the paper based on the similarity to existing papers.
 The output file is saved as `./categorized_papers_{threshold}.csv`, where `{threshold}` is the similarity threshold used for categorization.
+
+Potential Challenges:
+* Choosing the right similarity threshold to balance between over-classification and under-classification.
+* Handling papers that are on the borderline between categories.
+* Dealing with new emerging categories that don't exist in the current taxonomy.

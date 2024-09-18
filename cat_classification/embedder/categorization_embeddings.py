@@ -53,7 +53,8 @@ def generate_embeddings(texts):
 # Calculate similarity and assign categories
 def categorize_papers(new_embeddings, existing_embeddings, existing_categories, threshold):
     """
-    Calculate cosine similarity between new and existing embeddings and assign categories to new papers
+    Calculate cosine similarity between new and existing embeddings and assign categories to new papers.
+    Note that multiple categories can be assigned to a paper.
     :param new_embeddings: Numpy array of embeddings for new papers
     :param existing_embeddings: Numpy array of embeddings for existing papers
     :param existing_categories: List of categories for existing papers
@@ -74,7 +75,7 @@ def categorize_papers(new_embeddings, existing_embeddings, existing_categories, 
 # Main function
 def main():
     # Load existing papers
-    existing_papers = load_existing_papers('../abstract_adding/updated_papers_data.json')
+    existing_papers = load_existing_papers('../../abstract_adding/updated_papers_data.json')
     print(f"Found {len(existing_papers)} existing papers")
 
     # Extract abstracts and categories from existing papers
@@ -90,7 +91,7 @@ def main():
     existing_embeddings = generate_embeddings(existing_abstracts)
 
     # Load new papers
-    new_papers = load_new_papers('./copy_new_arxiv_papers_20240903_170512.csv')
+    new_papers = load_new_papers('../data/copy_new_arxiv_papers_20240903_170512.csv')
     print(f"Found {len(new_papers)} new papers")
 
     # Generate embeddings for new papers

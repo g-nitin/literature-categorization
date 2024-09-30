@@ -16,6 +16,30 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('punkt_tab')
 
+"""
+This script categorizes new papers based on their abstracts using a multi-label classification model: 
+    OneVsRestClassifier with LinearSVC
+The model is trained on existing papers data and then used to predict categories for new papers.
+The results are saved to a CSV file.
+
+Classification report:
+                         precision    recall  f1-score   support
+
+brain-inspired-planning       0.00      0.00      0.00         1
+heuristics-optimization       0.00      0.00      0.00         1
+   interactive-planning       0.00      0.00      0.00         6
+   language-translation       0.00      0.00      0.00         4
+     model-construction       0.00      0.00      0.00         2
+    multiagent-planning       0.00      0.00      0.00         1
+        plan-generation       0.40      0.20      0.27        10
+       tool-integration       0.00      0.00      0.00         3
+
+              micro avg       0.22      0.07      0.11        28
+              macro avg       0.05      0.03      0.03        28
+           weighted avg       0.14      0.07      0.10        28
+            samples avg       0.07      0.07      0.07        28
+"""
+
 
 def load_existing_papers(file_path):
     """

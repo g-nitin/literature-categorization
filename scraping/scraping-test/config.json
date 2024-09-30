@@ -1,0 +1,6 @@
+{
+    "log_dir": "logs",
+    "output_dir": "out",
+    "db_dir": "db",
+    "db_file": "arxiv_papers.db"
+}

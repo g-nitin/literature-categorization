@@ -1,0 +1,40 @@
+2024-09-24 12:03:18,842 - INFO - BASE_DIR: /Users/nitingupta/usc/aiisc/lit-cat/scraping-test
+2024-09-24 12:03:18,842 - INFO - LOG_DIR: /Users/nitingupta/usc/aiisc/lit-cat/scraping-test/logs
+2024-09-24 12:03:18,842 - INFO - OUTPUT_DIR: /Users/nitingupta/usc/aiisc/lit-cat/scraping-test/out
+2024-09-24 12:03:18,842 - INFO - DB_DIR: /Users/nitingupta/usc/aiisc/lit-cat/scraping-test/db
+2024-09-24 12:03:18,843 - INFO - DB_FILE: /Users/nitingupta/usc/aiisc/lit-cat/scraping-test/db/arxiv_papers.db
+2024-09-24 12:03:18,843 - INFO - Starting arXiv paper extraction
+2024-09-24 12:03:18,843 - INFO - Executing query: cat:cs.AI AND ("large language models" OR "LLMs" OR "GPT" OR "BERT" OR transformers)
+2024-09-24 12:03:18,843 - INFO - Requesting page (first: True, try: 0): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22large+language+models%22+OR+%22LLMs%22+OR+%22GPT%22+OR+%22BERT%22+OR+transformers%29&id_list=&sortBy=relevance&sortOrder=descending&start=0&max_results=100
+2024-09-24 12:03:20,200 - INFO - Got first page: 100 of 19835 total results
+2024-09-24 12:03:20,209 - INFO - Sleeping: 2.792480 seconds
+2024-09-24 12:03:23,003 - INFO - Requesting page (first: False, try: 0): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22large+language+models%22+OR+%22LLMs%22+OR+%22GPT%22+OR+%22BERT%22+OR+transformers%29&id_list=&sortBy=relevance&sortOrder=descending&start=100&max_results=100
+2024-09-24 12:03:31,723 - INFO - Executing query: cat:cs.AI AND ("automated planning" OR "symbolic planning" OR "neurosymbolic planning" OR "task planning" OR "AI planning")
+2024-09-24 12:03:31,723 - INFO - Sleeping: 2.873108 seconds
+2024-09-24 12:03:34,602 - INFO - Requesting page (first: True, try: 0): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22automated+planning%22+OR+%22symbolic+planning%22+OR+%22neurosymbolic+planning%22+OR+%22task+planning%22+OR+%22AI+planning%22%29&id_list=&sortBy=relevance&sortOrder=descending&start=0&max_results=100
+2024-09-24 12:03:36,412 - INFO - Got first page: 100 of 436 total results
+2024-09-24 12:03:36,417 - INFO - Sleeping: 2.896621 seconds
+2024-09-24 12:03:39,318 - INFO - Requesting page (first: False, try: 0): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22automated+planning%22+OR+%22symbolic+planning%22+OR+%22neurosymbolic+planning%22+OR+%22task+planning%22+OR+%22AI+planning%22%29&id_list=&sortBy=relevance&sortOrder=descending&start=100&max_results=100
+2024-09-24 12:03:39,927 - INFO - Sleeping: 2.997925 seconds
+2024-09-24 12:03:42,955 - INFO - Requesting page (first: False, try: 1): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22automated+planning%22+OR+%22symbolic+planning%22+OR+%22neurosymbolic+planning%22+OR+%22task+planning%22+OR+%22AI+planning%22%29&id_list=&sortBy=relevance&sortOrder=descending&start=100&max_results=100
+2024-09-24 12:03:43,772 - INFO - Sleeping: 2.980090 seconds
+2024-09-24 12:03:46,758 - INFO - Requesting page (first: False, try: 2): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22automated+planning%22+OR+%22symbolic+planning%22+OR+%22neurosymbolic+planning%22+OR+%22task+planning%22+OR+%22AI+planning%22%29&id_list=&sortBy=relevance&sortOrder=descending&start=100&max_results=100
+2024-09-24 12:03:47,968 - INFO - Sleeping: 2.998727 seconds
+2024-09-24 12:03:50,972 - INFO - Requesting page (first: False, try: 3): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22automated+planning%22+OR+%22symbolic+planning%22+OR+%22neurosymbolic+planning%22+OR+%22task+planning%22+OR+%22AI+planning%22%29&id_list=&sortBy=relevance&sortOrder=descending&start=100&max_results=100
+2024-09-24 12:03:53,503 - INFO - Executing query: cat:cs.AI AND ("neural-symbolic" OR "neurosymbolic") AND planning
+2024-09-24 12:03:53,503 - INFO - Sleeping: 2.846795 seconds
+2024-09-24 12:03:56,355 - INFO - Requesting page (first: True, try: 0): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22neural-symbolic%22+OR+%22neurosymbolic%22%29+AND+planning&id_list=&sortBy=relevance&sortOrder=descending&start=0&max_results=100
+2024-09-24 12:03:56,681 - INFO - Got first page: 7 of 7 total results
+2024-09-24 12:03:56,682 - INFO - Executing query: cat:cs.AI AND ("large language models" OR "LLMs" OR "GPT" OR "BERT" OR transformers) AND planning
+2024-09-24 12:03:56,682 - INFO - Sleeping: 2.989966 seconds
+2024-09-24 12:03:59,677 - INFO - Requesting page (first: True, try: 0): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22large+language+models%22+OR+%22LLMs%22+OR+%22GPT%22+OR+%22BERT%22+OR+transformers%29+AND+planning&id_list=&sortBy=relevance&sortOrder=descending&start=0&max_results=100
+2024-09-24 12:04:00,759 - INFO - Got first page: 100 of 971 total results
+2024-09-24 12:04:00,768 - INFO - Sleeping: 2.825949 seconds
+2024-09-24 12:04:03,608 - INFO - Requesting page (first: False, try: 0): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22large+language+models%22+OR+%22LLMs%22+OR+%22GPT%22+OR+%22BERT%22+OR+transformers%29+AND+planning&id_list=&sortBy=relevance&sortOrder=descending&start=100&max_results=100
+2024-09-24 12:04:04,229 - INFO - Sleeping: 2.998501 seconds
+2024-09-24 12:04:07,233 - INFO - Requesting page (first: False, try: 1): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22large+language+models%22+OR+%22LLMs%22+OR+%22GPT%22+OR+%22BERT%22+OR+transformers%29+AND+planning&id_list=&sortBy=relevance&sortOrder=descending&start=100&max_results=100
+2024-09-24 12:04:09,165 - INFO - Executing query: cat:cs.AI AND ("large language models" OR "LLMs" OR "GPT" OR "BERT" OR transformers) AND PDDL
+2024-09-24 12:04:09,166 - INFO - Sleeping: 2.857071 seconds
+2024-09-24 12:04:12,026 - INFO - Requesting page (first: True, try: 0): https://export.arxiv.org/api/query?search_query=cat%3Acs.AI+AND+%28%22large+language+models%22+OR+%22LLMs%22+OR+%22GPT%22+OR+%22BERT%22+OR+transformers%29+AND+PDDL&id_list=&sortBy=relevance&sortOrder=descending&start=0&max_results=100
+2024-09-24 12:04:12,379 - INFO - Got first page: 18 of 18 total results
+2024-09-24 12:04:12,519 - INFO - CSV file '/Users/nitingupta/usc/aiisc/lit-cat/scraping-test/out/new_arxiv_papers_20240924_120412.csv' has been created with 49 new relevant papers.

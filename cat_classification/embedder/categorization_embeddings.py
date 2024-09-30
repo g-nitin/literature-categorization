@@ -97,16 +97,16 @@ def main():
     # Generate embeddings for new papers
     new_embeddings = generate_embeddings(new_papers['Abstract'].tolist())
 
-    # Categorize new papers
-    threshold = 0.7
-    new_categories = categorize_papers(new_embeddings, existing_embeddings, existing_categories, threshold)
+    # Categorize new papers for different thresholds
+    thresholds = [0.5, 0.6, 0.7, 0.8, 0.9]
 
-    # Add categories to new papers dataframe
-    new_papers['Categories'] = new_categories
-    print(f"Number of unclassified papers: {new_categories.count(['Unclassified'])}")
+    for threshold in thresholds:
+        new_categories = categorize_papers(new_embeddings, existing_embeddings, existing_categories, threshold)
+        new_papers[f'Categories_{threshold}'] = new_categories
+        print(f"Number of unclassified papers (threshold {threshold}): {new_categories.count(['Unclassified'])}")
 
     # Save results
-    out_file_name = f"categorized_papers_{threshold}.csv"
+    out_file_name = "output/categorized_papers_multiple_thresholds.csv"
     new_papers.to_csv(out_file_name, index=False)
     print(f"Categorization complete. Results saved to '{out_file_name}'")
 

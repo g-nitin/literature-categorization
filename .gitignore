@@ -1,2 +1,4 @@
 .idea/
 .DS_Store
+cat_classification/sup_learning/scibert_model/
+/cat_classification/sup_learning/bert_model/

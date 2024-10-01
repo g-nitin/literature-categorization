@@ -9,18 +9,12 @@ import torch
 import json
 from collections import Counter
 from imblearn.over_sampling import RandomOverSampler
-
-
-"""
-This script categorizes new papers based on their abstracts using BERT.
-The model is trained on existing papers data and then used to predict categories for new papers.
-The results are saved to a CSV file.
-"""
+import os
+import pickle
 
 
 # Load existing papers data
 def load_existing_papers(file_path):
-    print(f"Loading existing papers data from {file_path}...")
     with open(file_path, 'r') as f:
         papers_data = json.load(f)
     return papers_data
@@ -28,16 +22,12 @@ def load_existing_papers(file_path):
 
 # Load new papers from CSV
 def load_new_papers(file_path):
-    print(f"Loading new papers data from {file_path}...")
     return pd.read_csv(file_path)
 
 
 # Prepare data for BERT
 def prepare_data(papers, tokenizer, max_length=512):
-    # Extract texts and categories
-    texts = [paper['title'] + " " + paper['abstract'] for paper in papers]  # Combine title and abstract
-
-    # Handle single and multiple categories
+    texts = [paper['title'] + " " + paper['abstract'] for paper in papers]
     categories = [paper['category'] if isinstance(paper['category'], list) else [paper['category']] for paper in papers]
 
     # Tokenize texts
@@ -50,17 +40,8 @@ def prepare_data(papers, tokenizer, max_length=512):
     return encodings, labels, mlb
 
 
-def get_device() -> torch.device:
-    if torch.cuda.is_available():
-        return torch.device('cuda')
-    # elif torch.backends.mps.is_available():
-    #     return torch.device('mps')
-    else:
-        return torch.device('cpu')
-
-
 # Train model
-def train_model(encodings, labels, mlb, num_epochs=10, batch_size=8):
+def train_model(encodings, labels, mlb, num_epochs=1, batch_size=8):
     # Convert to PyTorch tensors
     input_ids = encodings['input_ids']
     attention_mask = encodings['attention_mask']
@@ -71,15 +52,15 @@ def train_model(encodings, labels, mlb, num_epochs=10, batch_size=8):
     train_dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
     # Initialize model
-    model = BertForSequenceClassification.from_pretrained('bert-base-uncased',
-                                                          num_labels=len(mlb.classes_))
+    model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=len(mlb.classes_))
+    for param in model.parameters():
+        param.data = param.data.contiguous()
 
     # Set up optimizer
     optimizer = AdamW(model.parameters(), lr=2e-5)
 
     # Training loop
-    device = get_device()
-    print(f"Training on {device}...")
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     model.train()
 
@@ -98,9 +79,35 @@ def train_model(encodings, labels, mlb, num_epochs=10, batch_size=8):
     return model, mlb
 
 
+# Save model and MLB
+def save_model(model, mlb, model_dir):
+    if not os.path.exists(model_dir):
+        os.makedirs(model_dir)
+
+    # Save the model
+    model.save_pretrained(model_dir)
+
+    # Save the MultiLabelBinarizer
+    with open(os.path.join(model_dir, 'mlb.pkl'), 'wb') as f:
+        pickle.dump(mlb, f)
+
+
+# Load model and MLB
+def load_model(model_dir):
+    # Load the model
+    model = BertForSequenceClassification.from_pretrained(model_dir)
+    for param in model.parameters():
+        param.data = param.data.contiguous()
+
+    # Load the MultiLabelBinarizer
+    with open(os.path.join(model_dir, 'mlb.pkl'), 'rb') as f:
+        mlb = pickle.load(f)
+
+    return model, mlb
+
+
 # Categorize new papers
 def categorize_papers(model, tokenizer, mlb, new_papers, threshold=0.5):
-    print("Categorizing new papers...")
     texts = new_papers['Title'] + " " + new_papers['Abstract']
     encodings = tokenizer(texts.tolist(), truncation=True, padding=True, max_length=512, return_tensors="pt")
 
@@ -116,36 +123,44 @@ def categorize_papers(model, tokenizer, mlb, new_papers, threshold=0.5):
 
 # Main function
 def main():
-    # Load existing papers
-    existing_papers = load_existing_papers('../../abstract_adding/updated_papers_data.json')
+    model_dir = 'bert_model'
 
-    # Initialize tokenizer
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+    # Check if model exists
+    if os.path.exists(model_dir):
+        print("Loading existing model...")
+        model, mlb = load_model(model_dir)
+        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+    else:
+        print("Training new model...")
+        # Load existing papers
+        existing_papers = load_existing_papers('../../abstract_adding/updated_papers_data.json')
 
-    # Prepare data
-    encodings, labels, mlb = prepare_data(existing_papers, tokenizer)
+        # Initialize tokenizer
+        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-    # Handle class imbalance
-    ros = RandomOverSampler(random_state=13)  # Set random state for reproducibility
+        # Prepare data
+        encodings, labels, mlb = prepare_data(existing_papers, tokenizer)
 
-    # Resample data using RandomOverSampler
-    flat_labels = [item for sublist in mlb.inverse_transform(labels) for item in sublist]
+        # Handle class imbalance
+        ros = RandomOverSampler(random_state=42)
+        flat_labels = [item for sublist in mlb.inverse_transform(labels) for item in sublist]
+        resampled_encodings, resampled_labels = ros.fit_resample(
+            pd.DataFrame({'input_ids': encodings['input_ids'].numpy().tolist(),
+                          'attention_mask': encodings['attention_mask'].numpy().tolist()}),
+            flat_labels
+        )
 
-    # Convert labels to binary format
-    resampled_encodings, resampled_labels = ros.fit_resample(
-        pd.DataFrame({'input_ids': encodings['input_ids'].numpy().tolist(),
-                      'attention_mask': encodings['attention_mask'].numpy().tolist()}),
-        flat_labels
-    )
+        # Convert back to tensors
+        resampled_input_ids = torch.tensor(resampled_encodings['input_ids'].tolist())
+        resampled_attention_mask = torch.tensor(resampled_encodings['attention_mask'].tolist())
+        resampled_labels = mlb.transform([[label] for label in resampled_labels])
 
-    # Convert back to tensors
-    resampled_input_ids = torch.tensor(resampled_encodings['input_ids'].tolist())
-    resampled_attention_mask = torch.tensor(resampled_encodings['attention_mask'].tolist())
-    resampled_labels = mlb.transform([[label] for label in resampled_labels])
+        # Train model
+        model, mlb = train_model({'input_ids': resampled_input_ids, 'attention_mask': resampled_attention_mask},
+                                 resampled_labels, mlb)
 
-    # Train model
-    model, mlb = train_model({'input_ids': resampled_input_ids, 'attention_mask': resampled_attention_mask},
-                             resampled_labels, mlb)
+        # Save model
+        save_model(model, mlb, model_dir)
 
     # Load new papers
     new_papers = load_new_papers('../data/copy_new_arxiv_papers_20240903_170512.csv')
@@ -157,8 +172,9 @@ def main():
     new_papers['Categories'] = [', '.join(cats) if cats else 'Unclassified' for cats in new_categories]
 
     # Save results
-    new_papers.to_csv('output/categorized_papers.csv', index=False)
-    print("Categorization complete. Results saved to 'categorized_papers.csv'")
+    savefile = 'output/categorized_papers_bert.csv'
+    new_papers.to_csv(savefile, index=False)
+    print(f"Categorization complete. Results saved to '{savefile}'")
 
 
 if __name__ == "__main__":

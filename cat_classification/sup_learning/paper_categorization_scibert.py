@@ -1,13 +1,9 @@
 import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
 from sklearn.preprocessing import MultiLabelBinarizer
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, AdamW
 from torch.utils.data import DataLoader, TensorDataset
 import torch
 import json
-from collections import Counter
 from imblearn.over_sampling import RandomOverSampler
 import os
 
@@ -56,6 +52,9 @@ def train_model(encodings, labels, mlb, num_epochs=10, batch_size=8):
     model = AutoModelForSequenceClassification.from_pretrained(
         'allenai/scibert_scivocab_uncased', num_labels=len(mlb.classes_))
 
+    for param in model.parameters():
+        param.data = param.data.contiguous()
+
     # Set up optimizer
     optimizer = AdamW(model.parameters(), lr=2e-5)
 
@@ -98,6 +97,8 @@ def save_model(model, mlb, model_dir):
 def load_model(model_dir):
     # Load the model
     model = AutoModelForSequenceClassification.from_pretrained(model_dir)
+    for param in model.parameters():
+        param.data = param.data.contiguous()
 
     # Load the MultiLabelBinarizer
     import pickle

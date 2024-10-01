@@ -1,4 +1,6 @@
 # Category Classification
+_Please visit the relevant repository for more details._
+
 
 ## Embedding
 This script in this folder does the following:

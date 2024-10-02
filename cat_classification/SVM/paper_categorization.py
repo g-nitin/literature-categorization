@@ -148,7 +148,7 @@ def main():
     new_papers['Categories'] = [', '.join(cats) for cats in new_categories]
 
     # Save results
-    new_papers.to_csv('categorized_papers.csv', index=False)
+    new_papers.to_csv('output/categorized_papers.csv', index=False)
     print("Categorization complete. Results saved to 'categorized_papers.csv'")
 
 

@@ -108,7 +108,12 @@ def main():
         })
 
         # Save results
-        output_file = f'output/cross_validation_results_{model_name.replace("/", "_")}.csv'
+        if model_name == "bert-base-uncased":
+                output_file = f'output/cross_validation_results_bert.csv'
+        elif model_name == "allenai/scibert_scivocab_uncased":
+                output_file = f'output/cross_validation_results_scibert.csv'
+        else:
+            exit("Model not found")
         results_df.to_csv(output_file, index=False)
         print(f"Results saved to {output_file}")
 

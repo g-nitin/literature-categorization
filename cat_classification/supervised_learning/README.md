@@ -1,4 +1,4 @@
-# BERT and SciBERT Paper Categorization Process
+## Paper Categorization Using BERT and SciBERT 
 
 Both the BERT and SciBERT scripts follow a similar process for categorizing papers. Here's a step-by-step breakdown of what they're doing:
 
@@ -40,7 +40,7 @@ Both the BERT and SciBERT scripts follow a similar process for categorizing pape
 8. **Result Saving**:
    - The categorized papers are saved to a new CSV file with their assigned categories.
 
-## Key Differences between BERT and SciBERT
+### Key Differences between BERT and SciBERT
 
 The main difference between the BERT and SciBERT scripts is the base model they use:
 

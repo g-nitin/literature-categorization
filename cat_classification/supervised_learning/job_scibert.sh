@@ -13,7 +13,7 @@
 module load python3/anaconda/2021.07 gcc/12.2.0 cuda/12.1
 source activate /home/niting/.conda/envs/lit-cat
 
-pip3 install torch torchvision torchaudio
+pip install imbalanced-learn
 
 echo $CONDA_DEFAULT_ENV
 
